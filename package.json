@@ -4,6 +4,7 @@
   "description": "Backend server for the Knecht documentation client",
   "main": "index.js",
   "scripts": {
+    "start": "./index.js"
     "test": "test/test.js"
   },
   "keywords": [
