@@ -2,7 +2,7 @@ var gps = require("gps-tracking")
 
 var options = {
     'debug'                 : true,
-    'port'                  : 8090,
+    'port'                  : process.env.PORT || 5000,
     'device_adapter'        : "GT02A"
 }
 
