@@ -1,31 +1,35 @@
-var gps = require("gps-tracking")
+// Include Nodejs' net module.
+const Net = require('net');
+// The port on which the server is listening.
+const port = process.env.PORT || 5022;
 
-var options = {
-    'debug'                 : true,
-    'port'                  : process.env.PORT || 5000,
-    'device_adapter'        : "GT06"
-}
+// Use net.createServer() in your code. This is just for illustration purpose.
+// Create a new TCP server.
+const server = new Net.Server();
+// The server listens to a socket for a client to make a connection request.
+// Think of a socket as an end point.
+server.listen(port, function() {
+    console.log(`Server listening for connection requests on socket localhost:${port}`)
+});
 
-var server = gps.server(options,function(device,connection){
+// When a client requests a connection with the server, the server creates a new
+// socket dedicated to that client.
+server.on('connection', function(socket) {
+    console.log('A new connection has been established.');
 
-    device.on("login_request",function(device_id,msg_parts){
+    // The server can also receive data from the client by reading from its socket.
+    socket.on('data', function(chunk) {
+        console.log(`Data received from client: ${chunk.toString()}`);
+    });
 
-        // Some devices sends a login request before transmitting their position
-        // Do some stuff before authenticate the device... 
-        
-        // Accept the login request. You can set false to reject the device.
-        this.login_authorized(true) 
+    // When the client requests to end the TCP connection with the server, the server
+    // ends the connection.
+    socket.on('end', function() {
+        console.log('Closing connection with the client')
+    });
 
-    })
-
-
-    //PING -> When the gps sends their position  
-    device.on("ping",function(data){
-
-        //After the ping is received, but before the data is saved
-        console.log(data)
-        return data
-
-    })
-
-})
+    // Don't forget to catch error, for your own sake.
+    socket.on('error', function(err) {
+        console.log(`Error: ${err}`);
+    });
+});
