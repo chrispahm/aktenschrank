@@ -14,6 +14,7 @@
   "author": "Christoph Pahmeyer <christoph.pahmeyer@uni-bonn.de>",
   "license": "MIT",
   "dependencies": {
+    "@turf/turf": "^5.1.6",
     "gt06": "github:chrispahm/gt06#master",
     "nano": "^8.1.0"
   }
