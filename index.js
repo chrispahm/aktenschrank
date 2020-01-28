@@ -1,35 +1,39 @@
-// Include Nodejs' net module.
-const Net = require('net');
-// The port on which the server is listening.
-const port = process.env.PORT || 5022;
+const Gt06 = require('gt06');
+const net = require('net');
 
-// Use net.createServer() in your code. This is just for illustration purpose.
-// Create a new TCP server.
-const server = new Net.Server();
-// The server listens to a socket for a client to make a connection request.
-// Think of a socket as an end point.
-server.listen(port, function() {
-    console.log(`Server listening for connection requests on socket localhost:${port}`)
+var server = net.createServer((client) => {
+  var gt06 = new Gt06();
+  console.log('client connected');
+
+  client.on('data', (data) => {
+    try {
+      gt06.parse(data);
+    }
+    catch (e) {
+      console.log('err', e);
+      return;
+    }
+
+    if (gt06.expectsResponse) {
+      client.write(gt06.responseMsg);
+    }
+
+    if (gt06.imei && gt06.lat && gt06.lon) {
+      console.log(gt06.imei, gt06.lat, gt06.lon)
+      /* rethinkdb store 
+       {
+       imei: gt06.imei,
+       lat: gt06.lat
+       lng: gt06.lon,
+       time: new Date().toISOString()
+     }
+      */
+    }
+
+    gt06.clearMsgBuffer();
+  });
 });
 
-// When a client requests a connection with the server, the server creates a new
-// socket dedicated to that client.
-server.on('connection', function(socket) {
-    console.log('A new connection has been established.');
-
-    // The server can also receive data from the client by reading from its socket.
-    socket.on('data', function(chunk) {
-        console.log(`Data received from client: ${chunk.toString()}`);
-    });
-
-    // When the client requests to end the TCP connection with the server, the server
-    // ends the connection.
-    socket.on('end', function() {
-        console.log('Closing connection with the client')
-    });
-
-    // Don't forget to catch error, for your own sake.
-    socket.on('error', function(err) {
-        console.log(`Error: ${err}`);
-    });
+server.listen(5022, () => {
+  console.log('started server on port:', 5022);
 });
