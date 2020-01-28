@@ -4,11 +4,11 @@ const credentials = require('./credentials')
 const nano = require('nano')(`http://${credentials.server.user}:${encodeURIComponent(credentials.server.password)}@localhost:5984`)
 const gps = nano.db.use('gps')
 
-var server = net.createServer(async (client) => {
+var server = net.createServer((client) => {
   var gt06 = new Gt06();
   console.log('client connected');
 
-  client.on('data', (data) => {
+  client.on('data', async (data) => {
     try {
       gt06.parse(data);
     }
