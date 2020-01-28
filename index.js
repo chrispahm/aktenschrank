@@ -35,9 +35,10 @@ var server = net.createServer((client) => {
         const first = turf.point(cache[gt06.imei][2])
         const second = turf.point(cache[gt06.imei][0])
         const distance = turf.distance(first,second) * 1000
-        console.log(distance)
+        // if the tracker hasn't move more than 5m within 3 location updates,
+        // we assume it is parked -> no new data stored in db
+        if (distance < 5) return
       }
-      //
       try {
         const timestamp = new Date().toISOString()
         await gps.insert({
