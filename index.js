@@ -23,10 +23,12 @@ var server = net.createServer((client) => {
     if (gt06.imei && gt06.lat && gt06.lon) {
       console.log(gt06.imei, gt06.lat, gt06.lon)
       try {
+        const timestamp = new Date().toISOString()
         await gps.insert({
+          _id: `${gt06.imei}::${timestamp}::${gt06.lon}::${gt06.lat}`,
           imei: gt06.imei,
           pos: [gt06.lon, gt06.lat],
-          time: new Date().toISOString()
+          time: timestamp
         })
       } catch (e) {
         console.log('Couch Error: ' + e);
