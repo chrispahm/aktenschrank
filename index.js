@@ -25,15 +25,15 @@ var server = net.createServer((client) => {
 
     if (gt06.imei && gt06.lat && gt06.lon) {
       // check moving distance
-      if (!cache[imei]) cache[imei] = []
+      if (!cache[gt06.imei]) cache[gt06.imei] = []
       // store latest two locations, add the new location to the start of the array
-      cache[imei].unshift([gt06.lon, gt06.lat])
-      if (cache[imei].length === 4) {
+      cache[gt06.imei].unshift([gt06.lon, gt06.lat])
+      if (cache[gt06.imei].length === 4) {
         // remove last location from array
-        cache[imei].pop()
+        cache[gt06.imei].pop()
         // check the distance between the points
-        const first = turf.point(cache[imei][2])
-        const second = turf.point(cache[imei][0])
+        const first = turf.point(cache[gt06.imei][2])
+        const second = turf.point(cache[gt06.imei][0])
         const distance = turf.distance(first,second) * 1000
         console.log(distance)
       }
