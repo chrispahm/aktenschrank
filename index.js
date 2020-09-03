@@ -2,7 +2,10 @@ const Gt06 = require('gt06');
 const net = require('net');
 const turf = require('@turf/turf')
 const credentials = require('./credentials')
-const nano = require('nano')(`https://${credentials.server.user}:${encodeURIComponent(credentials.server.password)}@fruchtfolge.agp.uni-bonn.de/db/`)
+const nano = require('nano')({
+  url: `https://${credentials.server.user}:${encodeURIComponent(credentials.server.password)}@${credentials.server.host}`,
+  parseUrl: false  
+})
 const gps = nano.db.use('gps')
 
 const cache = {}
